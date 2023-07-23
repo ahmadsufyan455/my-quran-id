@@ -6,8 +6,7 @@ class QuranDetail {
   String? origin;
   String? mean;
   String? description;
-  String? audio;
-  bool? status;
+  Audio? audio;
   List<Verse>? verses;
 
   QuranDetail({
@@ -19,21 +18,28 @@ class QuranDetail {
     this.mean,
     this.description,
     this.audio,
-    this.status,
     this.verses,
   });
 
   QuranDetail.fromJson(Map<String, dynamic> json) {
     number = json['nomor'];
     name = json['nama'];
-    latinName = json['nama_latin'];
-    numberOfVerse = json['jumlah_ayat'];
-    origin = json['tempat_turun'];
+    latinName = json['namaLatin'];
+    numberOfVerse = json['jumlahAyat'];
+    origin = json['tempatTurun'];
     mean = json['arti'];
     description = json['deskripsi'];
-    audio = json['audio'];
-    status = json['status'];
+    audio = Audio.fromJson(json['audioFull']);
     verses = List.from(Verse.fromJson(json['ayat']) as List);
+  }
+}
+
+class Audio {
+  String? audio;
+  Audio({this.audio});
+
+  Audio.fromJson(Map<String, dynamic> json) {
+    audio = json['05'];
   }
 }
 

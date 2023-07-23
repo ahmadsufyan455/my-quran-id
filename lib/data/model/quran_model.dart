@@ -6,7 +6,7 @@ class Quran {
   String? origin;
   String? mean;
   String? description;
-  String? audio;
+  Audio? audio;
 
   Quran({
     this.number,
@@ -22,11 +22,20 @@ class Quran {
   Quran.fromJson(Map<String, dynamic> json) {
     number = json['nomor'];
     name = json['nama'];
-    latinName = json['nama_latin'];
-    numberOfVerse = json['jumlah_ayat'];
-    origin = json['tempat_turun'];
+    latinName = json['namaLatin'];
+    numberOfVerse = json['jumlahAyat'];
+    origin = json['tempatTurun'];
     mean = json['arti'];
     description = json['deskripsi'];
-    audio = json['audio'];
+    audio = Audio.fromJson(json['audioFull']);
+  }
+}
+
+class Audio {
+  String? audio;
+  Audio({this.audio});
+
+  Audio.fromJson(Map<String, dynamic> json) {
+    audio = json['05'];
   }
 }
