@@ -33,7 +33,14 @@ class HomePage extends StatelessWidget {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    child: Text(data.latinName!),
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        '/detail',
+                        arguments: data.number,
+                      ),
+                      child: Text(data.latinName!),
+                    ),
                   );
                 },
                 itemCount: state.quran.length,
