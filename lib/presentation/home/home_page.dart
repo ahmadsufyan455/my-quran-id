@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
+import 'package:my_quran_id/helper.dart';
 
 import 'bloc/quran_bloc.dart';
 
@@ -17,39 +20,195 @@ class HomePage extends StatelessWidget {
         ),
       )..add(LoadQuran()),
       child: Scaffold(
-        appBar: AppBar(title: const Text('My Quran ID')),
-        body: BlocBuilder<QuranBloc, QuranState>(
-          builder: (context, state) {
-            if (state is QuranLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is QuranSuccess) {
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  final data = state.quran[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        '/detail',
-                        arguments: data.number,
+        body: SafeArea(
+          child: BlocBuilder<QuranBloc, QuranState>(
+            builder: (context, state) {
+              if (state is QuranLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is QuranSuccess) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/svgs/welcome.svg',
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          Positioned(
+                            top: 35,
+                            left: 16,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  Helper.getToday(),
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  Helper.getHijrDate(),
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Text(data.latinName!),
                     ),
-                  );
-                },
-                itemCount: state.quran.length,
-              );
-            } else if (state is QuranError) {
-              return Center(child: Text(state.error));
-            }
-            return Container();
-          },
+                    const SizedBox(height: 10.0),
+                    Expanded(
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) => const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          child: Divider(
+                            color: Color(0XFFBBC4CE),
+                            thickness: 1,
+                          ),
+                        ),
+                        itemBuilder: (context, index) {
+                          final data = state.quran[index];
+                          return GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              '/detail',
+                              arguments: data.number,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 8,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                              'assets/png/bg_number.png',
+                                            ),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Text(
+                                            data.number.toString(),
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                              color: const Color(0XFF240F4F),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data.latinName!,
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                              color: const Color(0XFF240F4F),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                data.origin!.toUpperCase(),
+                                                style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                  color:
+                                                      const Color(0XFF8789A3),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Color(0XFFBBC4CE),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '${data.numberOfVerse} Ayat'
+                                                    .toUpperCase(),
+                                                style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                  color:
+                                                      const Color(0XFF8789A3),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    data.name!,
+                                    style: GoogleFonts.amiri(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 28,
+                                      color: const Color(0XFF863ED5),
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: state.quran.length,
+                      ),
+                    ),
+                  ],
+                );
+              } else if (state is QuranError) {
+                return Center(child: Text(state.error));
+              }
+              return Container();
+            },
+          ),
         ),
       ),
     );

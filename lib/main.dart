@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_quran_id/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting('id', null).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
