@@ -46,21 +46,11 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           Positioned(
-                            top: 35,
+                            top: 16,
                             left: 16,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                const SizedBox(height: 8),
                                 Text(
                                   Helper.getToday(),
                                   style: GoogleFonts.poppins(
