@@ -90,7 +90,10 @@ class HomePage extends StatelessWidget {
                             onTap: () => Navigator.pushNamed(
                               context,
                               '/detail',
-                              arguments: data.number,
+                              arguments: {
+                                'number': data.number,
+                                'name': data.latinName
+                              },
                             ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
