@@ -2,13 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 
 import 'bloc/quran_detail_bloc.dart';
 
-class QuranDetailPage extends StatelessWidget {
+class QuranDetailPage extends StatefulWidget {
   const QuranDetailPage({super.key});
+
+  @override
+  State<QuranDetailPage> createState() => _QuranDetailPageState();
+}
+
+class _QuranDetailPageState extends State<QuranDetailPage> {
+  final player = AudioPlayer();
+
+  @override
+  void dispose() {
+    player.stop();
+    player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +200,12 @@ class QuranDetailPage extends StatelessWidget {
                                       Row(
                                         children: [
                                           GestureDetector(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              await player.setUrl(
+                                                data.audio!.audio!,
+                                              );
+                                              player.play();
+                                            },
                                             child: SvgPicture.asset(
                                               'assets/svgs/play.svg',
                                             ),
