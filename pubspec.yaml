@@ -17,6 +17,7 @@ dependencies:
   hijriyah_indonesia: ^0.1.2
   intl: ^0.18.1
   intl_translation: ^0.18.2
+  just_audio: ^0.9.34
   meta: ^1.9.1
 
 dev_dependencies:

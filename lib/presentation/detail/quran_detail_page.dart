@@ -184,8 +184,12 @@ class QuranDetailPage extends StatelessWidget {
                                       ),
                                       Row(
                                         children: [
-                                          SvgPicture.asset(
-                                              'assets/svgs/play.svg'),
+                                          GestureDetector(
+                                            onTap: () {},
+                                            child: SvgPicture.asset(
+                                              'assets/svgs/play.svg',
+                                            ),
+                                          ),
                                           const SizedBox(width: 16),
                                           SvgPicture.asset(
                                             'assets/svgs/bookmark.svg',
