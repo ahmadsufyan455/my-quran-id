@@ -4,6 +4,7 @@ PODS:
   - Flutter (1.0.0)
   - just_audio (0.0.1):
     - Flutter
+    - FlutterMacOS
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -11,7 +12,7 @@ PODS:
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - Flutter (from `Flutter`)
-  - just_audio (from `.symlinks/plugins/just_audio/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 EXTERNAL SOURCES:
@@ -20,16 +21,16 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   just_audio:
-    :path: ".symlinks/plugins/just_audio/ios"
+    :path: ".symlinks/plugins/just_audio/darwin"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  audio_session: 19e9480dbdd4e5f6c4543826b2e8b0e4ab6145fe
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 
-PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.16.2

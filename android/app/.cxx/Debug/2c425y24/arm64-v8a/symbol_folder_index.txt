@@ -1,0 +1,1 @@
+/Users/ahmadsufyan/Documents/Personal/Flutter/Mini Project/my-quran-id/build/app/intermediates/cxx/Debug/2c425y24/obj/arm64-v8a

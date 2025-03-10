@@ -95,7 +95,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                       child: Divider(
                                         height: 1,
                                         thickness: 1,
-                                        color: Colors.white.withOpacity(0.3),
+                                        color: Colors.white.withValues(alpha: 0.3),
                                       ),
                                     ),
                                     const SizedBox(height: 16),
@@ -118,7 +118,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color:
-                                                Colors.white.withOpacity(0.3),
+                                                Colors.white.withValues(alpha: 0.3),
                                           ),
                                         ),
                                         const SizedBox(width: 5),
@@ -173,7 +173,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: Colors.grey.withValues(alpha: 0.3),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(

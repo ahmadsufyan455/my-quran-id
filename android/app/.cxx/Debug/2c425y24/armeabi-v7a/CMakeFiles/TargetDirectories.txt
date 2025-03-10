@@ -1,0 +1,2 @@
+/Users/ahmadsufyan/Documents/Personal/Flutter/Mini Project/my-quran-id/android/app/.cxx/Debug/2c425y24/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/ahmadsufyan/Documents/Personal/Flutter/Mini Project/my-quran-id/android/app/.cxx/Debug/2c425y24/armeabi-v7a/CMakeFiles/rebuild_cache.dir
