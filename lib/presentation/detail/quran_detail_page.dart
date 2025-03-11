@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 
 import 'bloc/quran_detail_bloc.dart';
@@ -35,8 +34,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     return BlocProvider(
       create:
           (context) =>
-              QuranDetailBloc(QuranRepository(RemoteDataSourceImpl()))
-                ..add(LoadQuranDetail(number)),
+              QuranDetailBloc(QuranRepository())..add(LoadQuranDetail(number)),
       child: Scaffold(
         appBar: AppBar(title: Text(name)),
         body: BlocBuilder<QuranDetailBloc, QuranDetailState>(
@@ -83,7 +81,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      data.latinName!,
+                                      data.latinName,
                                       style: const TextStyle(
                                         fontSize: 26,
                                         fontWeight: FontWeight.w500,
@@ -92,7 +90,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      data.mean!,
+                                      data.mean,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
@@ -118,7 +116,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          data.origin!.toUpperCase(),
+                                          data.origin.toUpperCase(),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14,
@@ -173,9 +171,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                 thickness: 1,
                               ),
                             ),
-                        itemCount: state.quranDetail.verses!.length,
+                        itemCount: state.quranDetail.verses.length,
                         itemBuilder: (context, index) {
-                          final data = state.quranDetail.verses?[index];
+                          final data = state.quranDetail.verses[index];
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
@@ -207,7 +205,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                         ),
                                         child: Center(
                                           child: Text(
-                                            data!.verseNumber.toString(),
+                                            data.verseNumber.toString(),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14,
@@ -221,7 +219,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                           GestureDetector(
                                             onTap: () async {
                                               await player.setUrl(
-                                                data.audio!.audio!,
+                                                data.audio.audio,
                                               );
                                               player.play();
                                             },
@@ -240,7 +238,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                 ),
                                 const SizedBox(height: 24),
                                 Text(
-                                  '${data.arabic}',
+                                  data.arabic,
                                   textAlign: TextAlign.right,
                                   textDirection: TextDirection.rtl,
                                   style: const TextStyle(
@@ -254,7 +252,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    data.translation!,
+                                    data.translation,
                                     textAlign: TextAlign.justify,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w400,

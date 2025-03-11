@@ -29,11 +29,12 @@ flutter:
   assets:
     - assets/svgs/
     - assets/images/
-
+    - assets/datas/quran_data.json
+    - assets/datas/surah/
   fonts:
     - family: Lpmq
       fonts:
         - asset: assets/fonts/lpmq_font.ttf
-    - family: Poppins
+    - family: Nunito
       fonts:
-        - asset: assets/fonts/poppins_regular.ttf
+        - asset: assets/fonts/nunito_font.ttf

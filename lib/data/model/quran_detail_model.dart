@@ -1,68 +1,66 @@
 class QuranDetail {
-  int? number;
-  String? name;
-  String? latinName;
-  int? numberOfVerse;
-  String? origin;
-  String? mean;
-  String? description;
-  Audio? audio;
-  List<Verse>? verses;
+  final int number;
+  final String name;
+  final String latinName;
+  final int numberOfVerse;
+  final String origin;
+  final String mean;
+  final String description;
+  final Audio audio;
+  final List<Verse> verses;
 
   QuranDetail({
-    this.number,
-    this.name,
-    this.latinName,
-    this.numberOfVerse,
-    this.origin,
-    this.mean,
-    this.description,
-    this.audio,
-    this.verses,
+    required this.number,
+    required this.name,
+    required this.latinName,
+    required this.numberOfVerse,
+    required this.origin,
+    required this.mean,
+    required this.description,
+    required this.audio,
+    required this.verses,
   });
 
-  QuranDetail.fromJson(Map<String, dynamic> json) {
-    number = json['nomor'];
-    name = json['nama'];
-    latinName = json['namaLatin'];
-    numberOfVerse = json['jumlahAyat'];
-    origin = json['tempatTurun'];
-    mean = json['arti'];
-    description = json['deskripsi'];
-    audio = Audio.fromJson(json['audioFull']);
-    verses = List<Verse>.from(json['ayat'].map((ayat) => Verse.fromJson(ayat)));
-  }
+  factory QuranDetail.fromJson(Map<String, dynamic> json) => QuranDetail(
+    number: json['nomor'],
+    name: json['nama'],
+    latinName: json['namaLatin'],
+    numberOfVerse: json['jumlahAyat'],
+    origin: json['tempatTurun'],
+    mean: json['arti'],
+    description: json['deskripsi'],
+    audio: Audio.fromJson(json['audioFull']),
+    verses: List<Verse>.from(json['ayat'].map((ayat) => Verse.fromJson(ayat))),
+  );
 }
 
 class Audio {
-  String? audio;
-  Audio({this.audio});
+  final String audio;
+  Audio({required this.audio});
 
-  Audio.fromJson(Map<String, dynamic> json) {
-    audio = json['05'];
-  }
+  factory Audio.fromJson(Map<String, dynamic> json) => Audio(audio: json['05']);
 }
 
 class Verse {
-  int? verseNumber;
-  String? arabic;
-  String? latin;
-  String? translation;
-  Audio? audio;
+  final int verseNumber;
+  final String arabic;
+  final String latin;
+  final String translation;
+  final Audio audio;
 
   Verse({
-    this.verseNumber,
-    this.arabic,
-    this.latin,
-    this.translation,
-    this.audio,
+    required this.verseNumber,
+    required this.arabic,
+    required this.latin,
+    required this.translation,
+    required this.audio,
   });
 
-  Verse.fromJson(Map<String, dynamic> json) {
-    verseNumber = json['nomorAyat'];
-    arabic = json['teksArab'];
-    latin = json['teksLatin'];
-    translation = json['teksIndonesia'];
-    audio = Audio.fromJson(json['audio']);
-  }
+  factory Verse.fromJson(Map<String, dynamic> json) => Verse(
+    verseNumber: json['nomorAyat'],
+    arabic: json['teksArab'],
+    latin: json['teksLatin'],
+    translation: json['teksIndonesia'],
+    audio: Audio.fromJson(json['audio']),
+  );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
 
@@ -13,10 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (context) =>
-              QuranBloc(QuranRepository(RemoteDataSourceImpl()))
-                ..add(LoadQuran()),
+      create: (context) => QuranBloc(QuranRepository())..add(LoadQuran()),
       child: Scaffold(
         body: SafeArea(
           child: BlocBuilder<QuranBloc, QuranState>(
