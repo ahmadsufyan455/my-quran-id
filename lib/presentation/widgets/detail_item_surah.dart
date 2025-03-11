@@ -3,15 +3,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_quran_id/data/model/quran_detail_model.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
+import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 
 class DetailItemSurah extends StatelessWidget {
   final Verse data;
+  final String surah;
   final int index;
-  const DetailItemSurah({super.key, required this.data, required this.index});
+  final GlobalKey itemKey; // Add this key to track height
+
+  const DetailItemSurah({
+    super.key,
+    required this.data,
+    required this.surah,
+    required this.index,
+    required this.itemKey,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      key: itemKey, // Assign key to track widget size
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -61,7 +72,17 @@ class DetailItemSurah extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    SvgPicture.asset('assets/svgs/bookmark.svg'),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<LastReadCubit>().saveLastRead(
+                          index,
+                          data.arabic,
+                          surah,
+                          data.verseNumber,
+                        );
+                      },
+                      child: SvgPicture.asset('assets/svgs/bookmark.svg'),
+                    ),
                   ],
                 ),
               ],

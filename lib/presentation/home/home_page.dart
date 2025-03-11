@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
+import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/list_item_surah.dart';
 
 import 'bloc/quran_bloc.dart';
@@ -60,6 +61,44 @@ class HomePage extends StatelessWidget {
                                     fontSize: 14,
                                   ),
                                 ),
+                                BlocBuilder<LastReadCubit, LastReadState>(
+                                  builder: (context, lastReadState) {
+                                    if (lastReadState.lastReadSurah != null &&
+                                        lastReadState.verseNumber != null) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 20),
+                                          const Row(
+                                            children: [
+                                              Icon(
+                                                Icons.book_rounded,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                'Terakhir dibaca',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            '${lastReadState.lastReadSurah} - Ayat ${lastReadState.verseNumber}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return Container();
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -79,7 +118,22 @@ class HomePage extends StatelessWidget {
                             ),
                         itemBuilder: (context, index) {
                           final data = state.quran[index];
-                          return ListItemSurah(data: data);
+                          return ListItemSurah(
+                            data: data,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/detail',
+                                arguments: {
+                                  'number': data.number,
+                                  'name': data.latinName,
+                                },
+                              ).then((_) {
+                                if (!context.mounted) return;
+                                context.read<LastReadCubit>().loadLastRead();
+                              });
+                            },
+                          );
                         },
                         itemCount: state.quran.length,
                       ),

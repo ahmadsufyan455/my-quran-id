@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
+import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/detail_item_surah.dart';
 
 import 'bloc/quran_detail_bloc.dart';
@@ -15,9 +16,31 @@ class QuranDetailPage extends StatefulWidget {
 }
 
 class _QuranDetailPageState extends State<QuranDetailPage> {
+  final ScrollController _scrollController = ScrollController();
+  final Map<int, GlobalKey> _itemKeys = {}; // Store keys for each item
+
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500), _scrollToLastRead);
+  }
+
+  void _scrollToLastRead() async {
+    await context.read<LastReadCubit>().loadLastRead();
+    if (!mounted) return;
+    final lastReadIndex = context.read<LastReadCubit>().state.lastReadIndex;
+    if (_itemKeys.containsKey(lastReadIndex)) {
+      final key = _itemKeys[lastReadIndex];
+      final contextWidget = key?.currentContext;
+      if (contextWidget != null) {
+        if (!contextWidget.mounted) return;
+        Scrollable.ensureVisible(
+          contextWidget,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
   }
 
   @override
@@ -67,10 +90,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                       alpha: 0.3,
                                     ),
                                     blurRadius: 10,
-                                    offset: const Offset(
-                                      4,
-                                      6,
-                                    ), // changes position of shadow
+                                    offset: const Offset(4, 6),
                                   ),
                                 ],
                               ),
@@ -161,6 +181,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                         ),
                       ),
                       ListView.separated(
+                        controller: _scrollController,
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         separatorBuilder:
@@ -176,8 +197,13 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                             ),
                         itemCount: state.quranDetail.verses.length,
                         itemBuilder: (context, index) {
-                          final data = state.quranDetail.verses[index];
-                          return DetailItemSurah(data: data, index: index);
+                          _itemKeys[index] = GlobalKey();
+                          return DetailItemSurah(
+                            itemKey: _itemKeys[index]!,
+                            data: state.quranDetail.verses[index],
+                            surah: name,
+                            index: index,
+                          );
                         },
                       ),
                     ],

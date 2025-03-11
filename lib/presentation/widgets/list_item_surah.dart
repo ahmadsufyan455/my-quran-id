@@ -3,17 +3,13 @@ import 'package:my_quran_id/data/model/quran_model.dart';
 
 class ListItemSurah extends StatelessWidget {
   final Quran data;
-  const ListItemSurah({super.key, required this.data});
+  final VoidCallback onTap;
+  const ListItemSurah({super.key, required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap:
-          () => Navigator.pushNamed(
-            context,
-            '/detail',
-            arguments: {'number': data.number, 'name': data.latinName},
-          ),
+    return InkWell(
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Row(
