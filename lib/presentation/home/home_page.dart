@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
@@ -14,19 +13,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuranBloc(
-        QuranRepository(
-          RemoteDataSourceImpl(),
-        ),
-      )..add(LoadQuran()),
+      create:
+          (context) =>
+              QuranBloc(QuranRepository(RemoteDataSourceImpl()))
+                ..add(LoadQuran()),
       child: Scaffold(
         body: SafeArea(
           child: BlocBuilder<QuranBloc, QuranState>(
             builder: (context, state) {
               if (state is QuranLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else if (state is QuranSuccess) {
                 return Column(
                   children: [
@@ -53,7 +49,7 @@ class HomePage extends StatelessWidget {
                               children: [
                                 Text(
                                   Helper.getToday(),
-                                  style: GoogleFonts.poppins(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                     fontSize: 14,
@@ -62,7 +58,7 @@ class HomePage extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Text(
                                   Helper.getHijrDate(),
-                                  style: GoogleFonts.poppins(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                     fontSize: 14,
@@ -77,24 +73,26 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 10.0),
                     Expanded(
                       child: ListView.separated(
-                        separatorBuilder: (context, index) => const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          child: Divider(
-                            color: Color(0XFFBBC4CE),
-                            thickness: 1,
-                          ),
-                        ),
+                        separatorBuilder:
+                            (context, index) => const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24),
+                              child: Divider(
+                                color: Color(0XFFBBC4CE),
+                                thickness: 1,
+                              ),
+                            ),
                         itemBuilder: (context, index) {
                           final data = state.quran[index];
                           return GestureDetector(
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              '/detail',
-                              arguments: {
-                                'number': data.number,
-                                'name': data.latinName
-                              },
-                            ),
+                            onTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  '/detail',
+                                  arguments: {
+                                    'number': data.number,
+                                    'name': data.latinName,
+                                  },
+                                ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
@@ -110,7 +108,7 @@ class HomePage extends StatelessWidget {
                                         decoration: const BoxDecoration(
                                           image: DecorationImage(
                                             image: AssetImage(
-                                              'assets/png/bg_number.png',
+                                              'assets/images/bg_number.png',
                                             ),
                                           ),
                                         ),
@@ -118,10 +116,10 @@ class HomePage extends StatelessWidget {
                                           padding: const EdgeInsets.all(20.0),
                                           child: Text(
                                             data.number.toString(),
-                                            style: GoogleFonts.poppins(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14,
-                                              color: const Color(0XFF240F4F),
+                                              color: Color(0XFF240F4F),
                                             ),
                                           ),
                                         ),
@@ -133,10 +131,10 @@ class HomePage extends StatelessWidget {
                                         children: [
                                           Text(
                                             data.latinName!,
-                                            style: GoogleFonts.poppins(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 16,
-                                              color: const Color(0XFF240F4F),
+                                              color: Color(0XFF240F4F),
                                             ),
                                           ),
                                           const SizedBox(height: 4),
@@ -144,11 +142,10 @@ class HomePage extends StatelessWidget {
                                             children: [
                                               Text(
                                                 data.origin!.toUpperCase(),
-                                                style: GoogleFonts.poppins(
+                                                style: const TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 12,
-                                                  color:
-                                                      const Color(0XFF8789A3),
+                                                  color: Color(0XFF8789A3),
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
@@ -164,11 +161,10 @@ class HomePage extends StatelessWidget {
                                               Text(
                                                 '${data.numberOfVerse} Ayat'
                                                     .toUpperCase(),
-                                                style: GoogleFonts.poppins(
+                                                style: const TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 12,
-                                                  color:
-                                                      const Color(0XFF8789A3),
+                                                  color: Color(0XFF8789A3),
                                                 ),
                                               ),
                                             ],
@@ -179,10 +175,11 @@ class HomePage extends StatelessWidget {
                                   ),
                                   Text(
                                     data.name!,
-                                    style: GoogleFonts.amiri(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 28,
-                                      color: const Color(0XFF863ED5),
+                                      color: Color(0XFF863ED5),
+                                      fontFamily: 'Lpmq',
                                     ),
                                     textDirection: TextDirection.rtl,
                                   ),

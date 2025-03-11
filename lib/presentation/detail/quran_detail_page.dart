@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_quran_id/data/model/source/remote_data_source.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
@@ -34,9 +33,10 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     final name = args['name'] as String;
 
     return BlocProvider(
-      create: (context) =>
-          QuranDetailBloc(QuranRepository(RemoteDataSourceImpl()))
-            ..add(LoadQuranDetail(number)),
+      create:
+          (context) =>
+              QuranDetailBloc(QuranRepository(RemoteDataSourceImpl()))
+                ..add(LoadQuranDetail(number)),
       child: Scaffold(
         appBar: AppBar(title: Text(name)),
         body: BlocBuilder<QuranDetailBloc, QuranDetailState>(
@@ -72,7 +72,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                   children: [
                                     Text(
                                       data.latinName!,
-                                      style: GoogleFonts.poppins(
+                                      style: const TextStyle(
                                         fontSize: 26,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
@@ -81,7 +81,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                     const SizedBox(height: 4),
                                     Text(
                                       data.mean!,
-                                      style: GoogleFonts.poppins(
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
@@ -95,7 +95,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                       child: Divider(
                                         height: 1,
                                         thickness: 1,
-                                        color: Colors.white.withValues(alpha: 0.3),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(height: 16),
@@ -105,7 +107,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                       children: [
                                         Text(
                                           data.origin!.toUpperCase(),
-                                          style: GoogleFonts.poppins(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14,
                                             color: Colors.white,
@@ -117,15 +119,16 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                           height: 4,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color:
-                                                Colors.white.withValues(alpha: 0.3),
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
                                           '${data.numberOfVerse} Ayat'
                                               .toUpperCase(),
-                                          style: GoogleFonts.poppins(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14,
                                             color: Colors.white,
@@ -135,27 +138,29 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                     ),
                                     const SizedBox(height: 32),
                                     SvgPicture.asset(
-                                        'assets/svgs/bismillah.svg'),
+                                      'assets/svgs/bismillah.svg',
+                                    ),
                                   ],
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
                       ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        separatorBuilder: (context, index) => const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 10,
-                          ),
-                          child: Divider(
-                            color: Color(0XFFBBC4CE),
-                            thickness: 1,
-                          ),
-                        ),
+                        separatorBuilder:
+                            (context, index) => const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 10,
+                              ),
+                              child: Divider(
+                                color: Color(0XFFBBC4CE),
+                                thickness: 1,
+                              ),
+                            ),
                         itemCount: state.quranDetail.verses!.length,
                         itemBuilder: (context, index) {
                           final data = state.quranDetail.verses?[index];
@@ -189,7 +194,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                         child: Center(
                                           child: Text(
                                             data!.verseNumber.toString(),
-                                            style: GoogleFonts.poppins(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14,
                                               color: Colors.white,
@@ -224,11 +229,11 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                   '${data.arabic}',
                                   textAlign: TextAlign.right,
                                   textDirection: TextDirection.rtl,
-                                  style: GoogleFonts.amiri(
-                                    fontWeight: FontWeight.w700,
+                                  style: const TextStyle(
                                     fontSize: 24,
-                                    color: const Color(0XFF240F4F),
+                                    color: Color(0XFF240F4F),
                                     height: 2.5,
+                                    fontFamily: 'Lpmq',
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -237,10 +242,10 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                   child: Text(
                                     data.translation!,
                                     textAlign: TextAlign.justify,
-                                    style: GoogleFonts.poppins(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
-                                      color: const Color(0XFF240F4F),
+                                      color: Color(0XFF240F4F),
                                     ),
                                   ),
                                 ),
