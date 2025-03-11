@@ -84,7 +84,21 @@ class DetailItemSurah extends StatelessWidget {
                           number,
                         );
                       },
-                      child: SvgPicture.asset('assets/svgs/bookmark.svg'),
+                      child: BlocBuilder<LastReadCubit, LastReadState>(
+                        builder: (context, state) {
+                          if (state.lastReadIndex != null &&
+                              state.lastReadIndex == index) {
+                            return const Icon(
+                              Icons.bookmark_rounded,
+                              color: Colors.deepPurple,
+                            );
+                          }
+                          return const Icon(
+                            Icons.bookmark_outline_rounded,
+                            color: Colors.deepPurple,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
