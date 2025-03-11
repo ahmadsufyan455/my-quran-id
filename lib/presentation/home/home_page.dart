@@ -65,7 +65,6 @@ class HomePage extends StatelessWidget {
                                   builder: (context, lastReadState) {
                                     if (lastReadState.lastReadSurah != null &&
                                         lastReadState.verseNumber != null) {
-                                      print(lastReadState.number);
                                       return Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
