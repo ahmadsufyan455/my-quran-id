@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.6
   flutter_svg: ^2.0.17
+  fluttertoast: ^8.2.12
   hijriyah_indonesia: ^0.1.5
   intl: ^0.18.1
   intl_translation: ^0.18.2

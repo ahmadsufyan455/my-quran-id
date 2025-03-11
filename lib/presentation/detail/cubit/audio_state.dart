@@ -21,3 +21,11 @@ final class AudioPlay extends AudioState {
 final class AudioPause extends AudioState {}
 
 final class AudioStop extends AudioState {}
+
+final class NoInternet extends AudioState {
+  final String message;
+  const NoInternet(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

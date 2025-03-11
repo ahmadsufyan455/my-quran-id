@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -28,6 +30,8 @@ class AudioCubit extends Cubit<AudioState> {
           }
         });
       }
+    } on SocketException catch (_) {
+      emit(const NoInternet('Butuh koneksi internet')); // Handle errors
     } catch (e) {
       emit(AudioStop()); // Handle errors
     }

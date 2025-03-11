@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_quran_id/data/model/quran_detail_model.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
@@ -64,7 +65,20 @@ class DetailItemSurah extends StatelessWidget {
                           index,
                         );
                       },
-                      child: BlocBuilder<AudioCubit, AudioState>(
+                      child: BlocConsumer<AudioCubit, AudioState>(
+                        listener: (context, state) {
+                          if (state is NoInternet) {
+                            Fluttertoast.showToast(
+                              msg: state.message,
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 3,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 14.0,
+                            );
+                          }
+                        },
                         builder: (context, state) {
                           if (state is AudioPlay && state.index == index) {
                             return SvgPicture.asset('assets/svgs/pause.svg');
