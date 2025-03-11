@@ -65,6 +65,7 @@ class HomePage extends StatelessWidget {
                                   builder: (context, lastReadState) {
                                     if (lastReadState.lastReadSurah != null &&
                                         lastReadState.verseNumber != null) {
+                                      print(lastReadState.number);
                                       return Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -101,7 +102,7 @@ class HomePage extends StatelessWidget {
                                                 '/detail',
                                                 arguments: {
                                                   'number':
-                                                      lastReadState.verseNumber,
+                                                      lastReadState.number,
                                                   'name':
                                                       lastReadState
                                                           .lastReadSurah,

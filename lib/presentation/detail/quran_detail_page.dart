@@ -30,6 +30,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.number);
     Future.delayed(const Duration(milliseconds: 500), _scrollToLastRead);
   }
 

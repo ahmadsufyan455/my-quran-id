@@ -49,7 +49,7 @@ class LastReadCubit extends Cubit<LastReadState> {
     final verse = prefs.getString('last_read_verse');
     final surah = prefs.getString('last_read_surah');
     final verseNumber = prefs.getInt('verse_number');
-    final number = prefs.getInt('verse_number');
+    final number = prefs.getInt('number');
     emit(
       LastReadState(
         lastReadIndex: index,

@@ -87,7 +87,8 @@ class DetailItemSurah extends StatelessWidget {
                       child: BlocBuilder<LastReadCubit, LastReadState>(
                         builder: (context, state) {
                           if (state.lastReadIndex != null &&
-                              state.lastReadIndex == index) {
+                              state.lastReadIndex == index &&
+                              state.lastReadSurah == surah) {
                             return const Icon(
                               Icons.bookmark_rounded,
                               color: Colors.deepPurple,
