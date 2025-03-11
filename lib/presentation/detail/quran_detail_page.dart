@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
+import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 
 import 'bloc/quran_detail_bloc.dart';
 
@@ -14,12 +14,8 @@ class QuranDetailPage extends StatefulWidget {
 }
 
 class _QuranDetailPageState extends State<QuranDetailPage> {
-  final player = AudioPlayer();
-
   @override
   void dispose() {
-    player.stop();
-    player.dispose();
     super.dispose();
   }
 
@@ -31,10 +27,16 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     final number = args['number'] as int;
     final name = args['name'] as String;
 
-    return BlocProvider(
-      create:
-          (context) =>
-              QuranDetailBloc(QuranRepository())..add(LoadQuranDetail(number)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create:
+              (context) =>
+                  QuranDetailBloc(QuranRepository())
+                    ..add(LoadQuranDetail(number)),
+        ),
+        BlocProvider(create: (context) => AudioCubit()),
+      ],
       child: Scaffold(
         appBar: AppBar(title: Text(name)),
         body: BlocBuilder<QuranDetailBloc, QuranDetailState>(
@@ -218,13 +220,28 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                         children: [
                                           GestureDetector(
                                             onTap: () async {
-                                              await player.setUrl(
-                                                data.audio.audio,
-                                              );
-                                              player.play();
+                                              context
+                                                  .read<AudioCubit>()
+                                                  .playAudio(
+                                                    data.audio.audio,
+                                                    index,
+                                                  );
                                             },
-                                            child: SvgPicture.asset(
-                                              'assets/svgs/play.svg',
+                                            child: BlocBuilder<
+                                              AudioCubit,
+                                              AudioState
+                                            >(
+                                              builder: (context, state) {
+                                                if (state is AudioPlay &&
+                                                    state.index == index) {
+                                                  return SvgPicture.asset(
+                                                    'assets/svgs/pause.svg',
+                                                  );
+                                                }
+                                                return SvgPicture.asset(
+                                                  'assets/svgs/play.svg',
+                                                );
+                                              },
                                             ),
                                           ),
                                           const SizedBox(width: 16),
