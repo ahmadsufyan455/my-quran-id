@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
                         children: [
                           Container(
                             width: double.infinity,
-                            height: 140,
+                            height: 180,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -93,10 +93,60 @@ class HomePage extends StatelessWidget {
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
+                                          const SizedBox(height: 8),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                '/detail',
+                                                arguments: {
+                                                  'number':
+                                                      lastReadState.verseNumber,
+                                                  'name':
+                                                      lastReadState
+                                                          .lastReadSurah,
+                                                  'isFromLastRead': true,
+                                                },
+                                              ).then((_) {
+                                                if (!context.mounted) return;
+                                                context
+                                                    .read<LastReadCubit>()
+                                                    .loadLastRead();
+                                              });
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 4,
+                                                    horizontal: 6,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white60,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: const Row(
+                                                children: [
+                                                  Text(
+                                                    'Lanjutkan Bacaan',
+                                                    style: TextStyle(
+                                                      color: Colors.deepPurple,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 4),
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_rounded,
+                                                    size: 15,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       );
                                     }
-                                    return Container();
+                                    return const SizedBox();
                                   },
                                 ),
                               ],

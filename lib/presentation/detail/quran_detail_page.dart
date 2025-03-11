@@ -9,7 +9,15 @@ import 'package:my_quran_id/presentation/widgets/detail_item_surah.dart';
 import 'bloc/quran_detail_bloc.dart';
 
 class QuranDetailPage extends StatefulWidget {
-  const QuranDetailPage({super.key});
+  final int number;
+  final String name;
+  final bool isFromLastRead;
+  const QuranDetailPage({
+    super.key,
+    required this.number,
+    required this.name,
+    required this.isFromLastRead,
+  });
 
   @override
   State<QuranDetailPage> createState() => _QuranDetailPageState();
@@ -26,43 +34,39 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
   }
 
   void _scrollToLastRead() async {
-    await context.read<LastReadCubit>().loadLastRead();
-    if (!mounted) return;
-    final lastReadIndex = context.read<LastReadCubit>().state.lastReadIndex;
-    if (_itemKeys.containsKey(lastReadIndex)) {
-      final key = _itemKeys[lastReadIndex];
-      final contextWidget = key?.currentContext;
-      if (contextWidget != null) {
-        if (!contextWidget.mounted) return;
-        Scrollable.ensureVisible(
-          contextWidget,
-          duration: const Duration(seconds: 1),
-          curve: Curves.easeInOut,
-        );
+    if (widget.isFromLastRead) {
+      await context.read<LastReadCubit>().loadLastRead();
+      if (!mounted) return;
+      final lastReadIndex = context.read<LastReadCubit>().state.lastReadIndex;
+      if (_itemKeys.containsKey(lastReadIndex)) {
+        final key = _itemKeys[lastReadIndex];
+        final contextWidget = key?.currentContext;
+        if (contextWidget != null) {
+          if (!contextWidget.mounted) return;
+          Scrollable.ensureVisible(
+            contextWidget,
+            duration: const Duration(seconds: 1),
+            curve: Curves.easeInOut,
+          );
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-
-    final number = args['number'] as int;
-    final name = args['name'] as String;
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create:
               (context) =>
                   QuranDetailBloc(QuranRepository())
-                    ..add(LoadQuranDetail(number)),
+                    ..add(LoadQuranDetail(widget.number)),
         ),
         BlocProvider(create: (context) => AudioCubit()),
       ],
       child: Scaffold(
-        appBar: AppBar(title: Text(name)),
+        appBar: AppBar(title: Text(widget.name)),
         body: BlocBuilder<QuranDetailBloc, QuranDetailState>(
           builder: (context, state) {
             if (state is QuranDetailLoading) {
@@ -201,7 +205,8 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                           return DetailItemSurah(
                             itemKey: _itemKeys[index]!,
                             data: state.quranDetail.verses[index],
-                            surah: name,
+                            surah: widget.name,
+                            number: widget.number,
                             index: index,
                           );
                         },

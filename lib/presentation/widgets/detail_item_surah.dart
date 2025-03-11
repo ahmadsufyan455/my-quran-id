@@ -9,6 +9,7 @@ class DetailItemSurah extends StatelessWidget {
   final Verse data;
   final String surah;
   final int index;
+  final int number;
   final GlobalKey itemKey; // Add this key to track height
 
   const DetailItemSurah({
@@ -16,6 +17,7 @@ class DetailItemSurah extends StatelessWidget {
     required this.data,
     required this.surah,
     required this.index,
+    required this.number,
     required this.itemKey,
   });
 
@@ -79,6 +81,7 @@ class DetailItemSurah extends StatelessWidget {
                           data.arabic,
                           surah,
                           data.verseNumber,
+                          number,
                         );
                       },
                       child: SvgPicture.asset('assets/svgs/bookmark.svg'),
