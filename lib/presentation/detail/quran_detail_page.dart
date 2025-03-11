@@ -60,6 +60,18 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.deepPurple.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    blurRadius: 10,
+                                    offset: const Offset(
+                                      4,
+                                      6,
+                                    ), // changes position of shadow
+                                  ),
+                                ],
                               ),
                               child: SvgPicture.asset(
                                 'assets/svgs/detail_surah.svg',
@@ -178,7 +190,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.withValues(alpha: 0.3),
+                                    color: Colors.grey.shade400.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(

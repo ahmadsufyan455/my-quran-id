@@ -55,7 +55,6 @@ class HomePage extends StatelessWidget {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
                                 Text(
                                   Helper.getHijrDate(),
                                   style: const TextStyle(
