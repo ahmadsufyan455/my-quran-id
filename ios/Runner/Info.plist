@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need to access quran audio</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to get prayer times.</string>
 </dict>
 </plist>

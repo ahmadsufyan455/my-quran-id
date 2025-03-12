@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_quran_id/presentation/bottom_nav/bottom_nav.dart';
 import 'package:my_quran_id/presentation/detail/quran_detail_page.dart';
 import 'package:my_quran_id/presentation/home/home_page.dart';
 
 final routes = {
-  '/': (context) => const HomePage(),
+  '/': (context) => BottomNav(),
+  '/home': (context) => const HomePage(),
   '/detail': (context) {
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
