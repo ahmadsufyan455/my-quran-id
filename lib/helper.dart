@@ -7,6 +7,10 @@ class Helper {
     return Hijriyah.now().toFormat('dd MMMM yyyy');
   }
 
+  static String getDate() {
+    return DateFormat("d MMMM yyyy", "id_ID").format(DateTime.now());
+  }
+
   static String getToday() {
     DateTime today = DateTime.now();
     return DateFormat('EEEE', 'id').format(today);

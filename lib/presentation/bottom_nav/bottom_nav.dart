@@ -19,7 +19,7 @@ class BottomNav extends StatelessWidget {
       child: BlocBuilder<BottomNavCubit, int>(
         builder: (context, currentIndex) {
           return Scaffold(
-            body: pages[currentIndex],
+            body: IndexedStack(index: currentIndex, children: pages),
             bottomNavigationBar: _buildNavigationBar(
               context,
               currentIndex,
@@ -45,7 +45,7 @@ class BottomNav extends StatelessWidget {
             color:
                 states.contains(WidgetState.selected)
                     ? theme.colorScheme.primary
-                    : Colors.grey,
+                    : Colors.deepPurpleAccent,
             fontWeight:
                 states.contains(WidgetState.selected)
                     ? FontWeight.bold
@@ -81,7 +81,10 @@ class BottomNav extends StatelessWidget {
       ),
       icon: SvgPicture.asset(
         iconPath,
-        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(
+          Colors.deepPurpleAccent,
+          BlendMode.srcIn,
+        ),
       ),
       label: label,
     );
