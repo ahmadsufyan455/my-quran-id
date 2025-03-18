@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:label="my_quran_id"
+        android:label="My Qur'an"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
