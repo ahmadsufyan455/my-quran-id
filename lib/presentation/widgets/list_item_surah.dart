@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/data/model/quran_model.dart';
 
 class ListItemSurah extends StatelessWidget {
@@ -30,7 +31,7 @@ class ListItemSurah extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: Color(0XFF240F4F),
+                        color: lightColor,
                       ),
                     ),
                   ),
@@ -44,7 +45,7 @@ class ListItemSurah extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
-                        color: Color(0XFF240F4F),
+                        color: lightColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -55,7 +56,7 @@ class ListItemSurah extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
-                            color: Color(0XFF8789A3),
+                            color: greyColor,
                           ),
                         ),
                         const SizedBox(width: 5),
@@ -64,7 +65,7 @@ class ListItemSurah extends StatelessWidget {
                           height: 4,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0XFFBBC4CE),
+                            color: greyColor,
                           ),
                         ),
                         const SizedBox(width: 5),
@@ -73,7 +74,7 @@ class ListItemSurah extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
-                            color: Color(0XFF8789A3),
+                            color: greyColor,
                           ),
                         ),
                       ],
@@ -87,7 +88,7 @@ class ListItemSurah extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 28,
-                color: Color(0XFF863ED5),
+                color: purpleColor,
                 fontFamily: 'Lpmq',
               ),
               textDirection: TextDirection.rtl,

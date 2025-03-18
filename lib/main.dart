@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/routes.dart';
 
@@ -23,11 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [BlocProvider.value(value: lastReadCubit)],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-          fontFamily: 'Nunito',
-        ),
+        theme: themeData,
         initialRoute: '/',
         routes: routes,
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/helper.dart';
 import 'package:my_quran_id/presentation/prayer/cubit/prayer_cubit.dart';
 
@@ -41,68 +42,64 @@ class PrayerTimesList extends StatelessWidget {
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: MediaQuery.sizeOf(context).height * 0.4,
-                width: MediaQuery.sizeOf(context).width,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/masjid.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: MediaQuery.sizeOf(context).height * 0.4,
+              width: MediaQuery.sizeOf(context).width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/masjid.jpg'),
+                  fit: BoxFit.cover,
                 ),
-                child: Stack(
-                  children: [
-                    Container(color: Colors.black.withValues(alpha: 0.4)),
-                    Positioned(
-                      bottom: 16,
-                      left: 16,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Hari ini',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                          Text(
-                            '${Helper.getToday()}, ${Helper.getDate()} / ${Helper.getHijrDate()}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
+              ),
+              child: Stack(
+                children: [
+                  Container(color: Colors.black.withValues(alpha: 0.4)),
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hari ini',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        Text(
+                          '${Helper.getToday()}, ${Helper.getDate()} / ${Helper.getHijrDate()}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 16),
-              Text(
-                state.cityName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+            const SizedBox(height: 16),
+            Text(
+              state.cityName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: greyColor,
               ),
-              const SizedBox(height: 20),
-              PrayerTile(
-                title: "Subuh",
-                time: state.prayerTimes.fajrStartTime!,
-              ),
-              PrayerTile(
-                title: "Dzuhur",
-                time: state.prayerTimes.dhuhrStartTime!,
-              ),
-              PrayerTile(title: "Ashar", time: state.prayerTimes.asrStartTime!),
-              PrayerTile(
-                title: "Maghrib",
-                time: state.prayerTimes.maghribStartTime!,
-              ),
-              PrayerTile(title: "Isya", time: state.prayerTimes.ishaStartTime!),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            PrayerTile(title: "Subuh", time: state.prayerTimes.fajrStartTime!),
+            PrayerTile(
+              title: "Dzuhur",
+              time: state.prayerTimes.dhuhrStartTime!,
+            ),
+            PrayerTile(title: "Ashar", time: state.prayerTimes.asrStartTime!),
+            PrayerTile(
+              title: "Maghrib",
+              time: state.prayerTimes.maghribStartTime!,
+            ),
+            PrayerTile(title: "Isya", time: state.prayerTimes.ishaStartTime!),
+          ],
         ),
       ),
     );
@@ -118,10 +115,14 @@ class PrayerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      title: Text(title, style: const TextStyle(color: greyColor)),
       trailing: Text(
         "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: lightColor,
+        ),
       ),
     );
   }

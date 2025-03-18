@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/presentation/bottom_nav/cubit/bottom_nav_cubit.dart';
 import 'package:my_quran_id/presentation/home/home_page.dart';
 import 'package:my_quran_id/presentation/prayer/prayer_time_page.dart';
@@ -43,9 +44,7 @@ class BottomNav extends StatelessWidget {
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
           (states) => TextStyle(
             color:
-                states.contains(WidgetState.selected)
-                    ? theme.colorScheme.primary
-                    : Colors.deepPurpleAccent,
+                states.contains(WidgetState.selected) ? purpleColor : greyColor,
             fontWeight:
                 states.contains(WidgetState.selected)
                     ? FontWeight.bold
@@ -55,7 +54,7 @@ class BottomNav extends StatelessWidget {
       ),
       child: NavigationBar(
         indicatorColor: Colors.transparent,
-        backgroundColor: theme.colorScheme.primaryContainer,
+        backgroundColor: darkerGreyColor,
         selectedIndex: currentIndex,
         onDestinationSelected:
             (index) => context.read<BottomNavCubit>().changeTab(index),
@@ -77,14 +76,11 @@ class BottomNav extends StatelessWidget {
     return NavigationDestination(
       selectedIcon: SvgPicture.asset(
         iconPath,
-        colorFilter: const ColorFilter.mode(Colors.deepPurple, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(purpleColor, BlendMode.srcIn),
       ),
       icon: SvgPicture.asset(
         iconPath,
-        colorFilter: const ColorFilter.mode(
-          Colors.deepPurpleAccent,
-          BlendMode.srcIn,
-        ),
+        colorFilter: const ColorFilter.mode(greyColor, BlendMode.srcIn),
       ),
       label: label,
     );

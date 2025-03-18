@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
@@ -23,9 +24,20 @@ class HomePage extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is QuranSuccess) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      child: Text(
+                        'Assalamu\'alaikum',
+                        style: TextStyle(fontSize: 18, color: greyColor),
+                      ),
+                    ),
                     Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Stack(
                         children: [
                           Container(
@@ -161,10 +173,7 @@ class HomePage extends StatelessWidget {
                         separatorBuilder:
                             (context, index) => const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24),
-                              child: Divider(
-                                color: Color(0XFFBBC4CE),
-                                thickness: 1,
-                              ),
+                              child: Divider(color: greyColor, thickness: 1),
                             ),
                         itemBuilder: (context, index) {
                           final data = state.quran[index];

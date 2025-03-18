@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
@@ -194,10 +195,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                                 horizontal: 24,
                                 vertical: 10,
                               ),
-                              child: Divider(
-                                color: Color(0XFFBBC4CE),
-                                thickness: 1,
-                              ),
+                              child: Divider(color: greyColor, thickness: 1),
                             ),
                         itemCount: state.quranDetail.verses.length,
                         itemBuilder: (context, index) {

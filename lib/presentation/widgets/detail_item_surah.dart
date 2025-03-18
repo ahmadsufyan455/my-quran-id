@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/data/model/quran_detail_model.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
@@ -33,7 +34,7 @@ class DetailItemSurah extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.grey.shade400.withValues(alpha: 0.2),
+              color: darkerGreyColor,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -42,7 +43,7 @@ class DetailItemSurah extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: const BoxDecoration(
-                    color: Color(0XFF863ED5),
+                    color: purpleColor,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -51,7 +52,7 @@ class DetailItemSurah extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: Colors.white,
+                        color: lightColor,
                       ),
                     ),
                   ),
@@ -81,9 +82,21 @@ class DetailItemSurah extends StatelessWidget {
                         },
                         builder: (context, state) {
                           if (state is AudioPlay && state.index == index) {
-                            return SvgPicture.asset('assets/svgs/pause.svg');
+                            return SvgPicture.asset(
+                              'assets/svgs/pause.svg',
+                              colorFilter: const ColorFilter.mode(
+                                purpleColor,
+                                BlendMode.srcIn,
+                              ),
+                            );
                           }
-                          return SvgPicture.asset('assets/svgs/play.svg');
+                          return SvgPicture.asset(
+                            'assets/svgs/play.svg',
+                            colorFilter: const ColorFilter.mode(
+                              purpleColor,
+                              BlendMode.srcIn,
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -105,12 +118,12 @@ class DetailItemSurah extends StatelessWidget {
                               state.lastReadSurah == surah) {
                             return const Icon(
                               Icons.bookmark_rounded,
-                              color: Colors.deepPurple,
+                              color: purpleColor,
                             );
                           }
                           return const Icon(
                             Icons.bookmark_outline_rounded,
-                            color: Colors.deepPurple,
+                            color: purpleColor,
                           );
                         },
                       ),
@@ -127,7 +140,7 @@ class DetailItemSurah extends StatelessWidget {
             textDirection: TextDirection.rtl,
             style: const TextStyle(
               fontSize: 24,
-              color: Color(0XFF240F4F),
+              color: lightColor,
               height: 2.5,
               fontFamily: 'Lpmq',
             ),
@@ -141,7 +154,7 @@ class DetailItemSurah extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: Color(0XFF240F4F),
+                color: greyColor,
               ),
             ),
           ),
