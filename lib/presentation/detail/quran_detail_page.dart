@@ -55,6 +55,12 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -77,6 +83,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
               return Scrollbar(
                 thumbVisibility: true,
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Column(
                     children: [
                       Padding(
@@ -186,7 +193,6 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                         ),
                       ),
                       ListView.separated(
-                        controller: _scrollController,
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         separatorBuilder:
