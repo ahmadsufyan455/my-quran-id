@@ -1,0 +1,1 @@
+/Users/ahmadsufyan/Documents/Personal/Flutter/Mini Project/my-quran-id/build/app/intermediates/cxx/RelWithDebInfo/4o586e5q/obj/armeabi-v7a

@@ -6,6 +6,7 @@ import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/list_item_surah.dart';
+import 'package:my_quran_id/routes.dart';
 
 import 'bloc/quran_bloc.dart';
 
@@ -110,7 +111,7 @@ class HomePage extends StatelessWidget {
                                             onTap: () {
                                               Navigator.pushNamed(
                                                 context,
-                                                '/detail',
+                                                RouteName.detail.name,
                                                 arguments: {
                                                   'number':
                                                       lastReadState.number,
@@ -182,7 +183,7 @@ class HomePage extends StatelessWidget {
                             onTap: () {
                               Navigator.pushNamed(
                                 context,
-                                '/detail',
+                                RouteName.detail.name,
                                 arguments: {
                                   'number': data.number,
                                   'name': data.latinName,
