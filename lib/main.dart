@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider.value(value: lastReadCubit)],
+    return BlocProvider.value(
+      value: lastReadCubit,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: themeData,
