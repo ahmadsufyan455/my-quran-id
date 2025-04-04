@@ -41,7 +41,7 @@ class ListItemSurah extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data.latinName!,
+                      data.latinName ?? '',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
@@ -84,7 +84,7 @@ class ListItemSurah extends StatelessWidget {
               ],
             ),
             Text(
-              data.name!,
+              data.name ?? '',
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 28,
