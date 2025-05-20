@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
+import 'package:my_quran_id/presentation/detail/cubit/scroll_cubit.dart';
 import 'package:my_quran_id/routes.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -13,7 +14,12 @@ void main() async {
   final lastReadCubit = LastReadCubit();
   await lastReadCubit.loadLastRead();
   initializeDateFormatting('id', null).then((_) {
-    runApp(MyApp(lastReadCubit: lastReadCubit));
+    runApp(
+      BlocProvider(
+        create: (context) => ScrollCubit(),
+        child: MyApp(lastReadCubit: lastReadCubit),
+      ),
+    );
   });
 }
 

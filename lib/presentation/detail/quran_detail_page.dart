@@ -7,6 +7,7 @@ import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/main.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
+import 'package:my_quran_id/presentation/detail/cubit/scroll_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/detail_item_surah.dart';
 import 'package:my_quran_id/routes.dart';
 
@@ -30,22 +31,16 @@ class QuranDetailPage extends StatefulWidget {
 class _QuranDetailPageState extends State<QuranDetailPage> {
   final ScrollController _scrollController = ScrollController();
   final Map<int, GlobalKey> _itemKeys = {}; // Store keys for each item
-  bool _showNextSurahButton = false;
 
   void _onScroll() {
+    final cubit = context.read<ScrollCubit>();
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 100) {
-      if (!_showNextSurahButton && widget.number != 114) {
-        setState(() {
-          _showNextSurahButton = true;
-        });
+      if (widget.number != 114) {
+        cubit.showButton();
       }
     } else {
-      if (_showNextSurahButton) {
-        setState(() {
-          _showNextSurahButton = false;
-        });
-      }
+      cubit.hideButton();
     }
   }
 
@@ -78,6 +73,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -247,33 +243,41 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                 );
               },
             ),
-            if (_showNextSurahButton)
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: purpleColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  final nextNumber = widget.number + 1;
-                  if (nextNumber <= 114) {
-                    final nextSurahName = surahNames[nextNumber - 1];
+            BlocBuilder<ScrollCubit, bool>(
+              builder: (context, showButton) {
+                if (!showButton) return const SizedBox.shrink();
 
-                    Navigator.pushReplacementNamed(
-                      context,
-                      RouteName.detail.name,
-                      arguments: {'number': nextNumber, 'name': nextSurahName},
-                    );
-                  }
-                },
-                label: const Text(
-                  'Next Surah',
-                  style: TextStyle(fontSize: 16, color: lightColor),
-                ),
-                icon: const Icon(Icons.skip_next_rounded, color: lightColor),
-              ),
+                return ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: purpleColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    final nextNumber = widget.number + 1;
+                    if (nextNumber <= 114) {
+                      final nextSurahName = surahNames[nextNumber - 1];
+
+                      Navigator.pushReplacementNamed(
+                        context,
+                        RouteName.detail.name,
+                        arguments: {
+                          'number': nextNumber,
+                          'name': nextSurahName,
+                        },
+                      );
+                    }
+                  },
+                  label: const Text(
+                    'Next Surah',
+                    style: TextStyle(fontSize: 16, color: lightColor),
+                  ),
+                  icon: const Icon(Icons.skip_next_rounded, color: lightColor),
+                );
+              },
+            ),
           ],
         ),
       ),
