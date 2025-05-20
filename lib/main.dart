@@ -5,6 +5,9 @@ import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/routes.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+List<String?> surahNames = [];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final lastReadCubit = LastReadCubit();
@@ -24,6 +27,7 @@ class MyApp extends StatelessWidget {
       value: lastReadCubit,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        navigatorObservers: [routeObserver],
         theme: themeData,
         initialRoute: RouteName.bottomNav.name,
         routes: routes,

@@ -4,14 +4,36 @@ import 'package:flutter_svg/svg.dart';
 import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/helper.dart';
+import 'package:my_quran_id/main.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/list_item_surah.dart';
 import 'package:my_quran_id/routes.dart';
 
 import 'bloc/quran_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+    context.read<LastReadCubit>().loadLastRead();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +46,7 @@ class HomePage extends StatelessWidget {
               if (state is QuranLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is QuranSuccess) {
+                surahNames = state.quran.map((e) => e.latinName).toList();
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
