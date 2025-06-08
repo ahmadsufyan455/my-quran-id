@@ -139,10 +139,12 @@ class DetailItemSurah extends StatelessWidget {
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 26,
               color: lightColor,
               height: 2.5,
+              wordSpacing: 3.0,
               fontFamily: 'Lpmq',
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 16),

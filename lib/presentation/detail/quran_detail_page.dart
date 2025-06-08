@@ -36,7 +36,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     final cubit = context.read<ScrollCubit>();
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 100) {
-      if (widget.number != 114) {
+      if (widget.number < 114) {
         cubit.showButton();
       }
     } else {
@@ -90,7 +90,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
         BlocProvider(create: (context) => AudioCubit()),
       ],
       child: Scaffold(
-        appBar: AppBar(title: Text(widget.name)),
+        appBar: AppBar(title: Text('${widget.number}. ${widget.name}')),
         body: BlocBuilder<QuranDetailBloc, QuranDetailState>(
           builder: (context, state) {
             if (state is QuranDetailLoading) {
@@ -243,7 +243,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
             ),
             BlocBuilder<ScrollCubit, bool>(
               builder: (context, showButton) {
-                if (!showButton) return const SizedBox.shrink();
+                if (!showButton || widget.number >= 114) {
+                  return const SizedBox.shrink();
+                }
 
                 return ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
@@ -268,9 +270,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                       );
                     }
                   },
-                  label: const Text(
-                    'Next Surah',
-                    style: TextStyle(fontSize: 16, color: lightColor),
+                  label: Text(
+                    '${surahNames[widget.number + 1 - 1]}',
+                    style: const TextStyle(fontSize: 16, color: lightColor),
                   ),
                   icon: const Icon(Icons.skip_next_rounded, color: lightColor),
                 );
