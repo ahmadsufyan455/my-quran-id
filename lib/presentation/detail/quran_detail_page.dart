@@ -83,10 +83,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create:
-              (context) =>
-                  QuranDetailBloc(QuranRepository())
-                    ..add(LoadQuranDetail(widget.number)),
+          create: (context) =>
+              QuranDetailBloc(QuranRepository())
+                ..add(LoadQuranDetail(widget.number)),
         ),
         BlocProvider(create: (context) => AudioCubit()),
       ],
@@ -226,11 +225,10 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
             ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              separatorBuilder:
-                  (context, index) => const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    child: Divider(color: greyColor, thickness: 1),
-                  ),
+              separatorBuilder: (context, index) => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                child: Divider(color: greyColor, thickness: 1),
+              ),
               itemCount: data.verses.length,
               itemBuilder: (context, index) {
                 itemKeys[index] = GlobalKey();

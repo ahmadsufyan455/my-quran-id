@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.1.0+2
 
 environment:
-  sdk: ">=3.7.2 <4.0.0"
+  sdk: ">=3.8.1 <4.0.0"
 dependencies:
   adhan: ^2.0.0+1
   connectivity_plus: ^6.1.3
