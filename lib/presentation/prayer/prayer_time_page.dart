@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_quran_id/constant.dart';
 import 'package:my_quran_id/helper.dart';
+import 'package:my_quran_id/presentation/prayer/cubit/prayer_countdown_cubit.dart';
 import 'package:my_quran_id/presentation/prayer/cubit/prayer_cubit.dart';
 
 class PrayerTimePage extends StatefulWidget {
@@ -24,17 +25,15 @@ class _PrayerTimePageState extends State<PrayerTimePage> {
             if (state is PrayerLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is PrayerLoaded) {
-              final now = DateTime.now();
               final prayerTimes = state.prayerTimes;
-              final times = [
+              final prayers = [
                 {'name': 'Subuh', 'time': prayerTimes.fajrStartTime},
                 {'name': 'Dzuhur', 'time': prayerTimes.dhuhrStartTime},
                 {'name': 'Ashar', 'time': prayerTimes.asrStartTime},
                 {'name': 'Maghrib', 'time': prayerTimes.maghribStartTime},
                 {'name': 'Isya', 'time': prayerTimes.ishaStartTime},
               ];
-              nearestTime = Helper.getNearestPrayer(times, now);
-              return PrayerTimesList(state: state, nearestTime: nearestTime);
+              return PrayerTimesList(state: state, prayers: prayers);
             } else if (state is PrayerError) {
               return Center(child: Text(state.message));
             }
@@ -48,16 +47,17 @@ class _PrayerTimePageState extends State<PrayerTimePage> {
 
 class PrayerTimesList extends StatelessWidget {
   final PrayerLoaded state;
-  final String nearestTime;
+  final List<Map<String, dynamic>> prayers;
 
   const PrayerTimesList({
     super.key,
     required this.state,
-    required this.nearestTime,
+    required this.prayers,
   });
 
   @override
   Widget build(BuildContext context) {
+    final upcomingLabel = Helper.getNearestPrayer(prayers, DateTime.now());
     return RefreshIndicator(
       onRefresh: () async {
         context.read<PrayerCubit>().fetchPrayerTimes();
@@ -109,31 +109,33 @@ class PrayerTimesList extends StatelessWidget {
                 color: greyColor,
               ),
             ),
+            const SizedBox(height: 8),
+            PrayerCountdownText(prayers: prayers),
             const SizedBox(height: 20),
             PrayerTile(
               title: "Subuh",
               time: state.prayerTimes.fajrStartTime!,
-              hasColor: nearestTime == 'Subuh' ? true : false,
+              hasColor: upcomingLabel == 'Subuh',
             ),
             PrayerTile(
               title: "Dzuhur",
               time: state.prayerTimes.dhuhrStartTime!,
-              hasColor: nearestTime == 'Dzuhur' ? true : false,
+              hasColor: upcomingLabel == 'Dzuhur',
             ),
             PrayerTile(
               title: "Ashar",
               time: state.prayerTimes.asrStartTime!,
-              hasColor: nearestTime == 'Ashar' ? true : false,
+              hasColor: upcomingLabel == 'Ashar',
             ),
             PrayerTile(
               title: "Maghrib",
               time: state.prayerTimes.maghribStartTime!,
-              hasColor: nearestTime == 'Maghrib' ? true : false,
+              hasColor: upcomingLabel == 'Maghrib',
             ),
             PrayerTile(
               title: "Isya",
               time: state.prayerTimes.ishaStartTime!,
-              hasColor: nearestTime == 'Isya' ? true : false,
+              hasColor: upcomingLabel == 'Isya',
             ),
           ],
         ),
@@ -166,6 +168,35 @@ class PrayerTile extends StatelessWidget {
           fontSize: 16,
           color: lightColor,
         ),
+      ),
+    );
+  }
+}
+
+class PrayerCountdownText extends StatelessWidget {
+  final List<Map<String, dynamic>> prayers;
+
+  const PrayerCountdownText({Key? key, required this.prayers})
+    : super(key: key);
+
+  String _formatDuration(Duration d) {
+    final hours = d.inHours.toString().padLeft(2, '0');
+    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$hours:$minutes:$seconds';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => PrayerCountdownCubit(prayers),
+      child: BlocBuilder<PrayerCountdownCubit, PrayerCountdownState>(
+        builder: (context, state) {
+          return Text(
+            '${_formatDuration(state.countdown)} menuju waktu ${state.label}',
+            style: const TextStyle(fontSize: 18, color: greyColor),
+          );
+        },
       ),
     );
   }

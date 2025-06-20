@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hijriyah_indonesia/hijriyah_indonesia.dart';
 import 'package:intl/intl.dart';
@@ -26,15 +28,14 @@ class Helper {
     List<Map<String, dynamic>> times,
     DateTime now,
   ) {
-    for (var i = 0; i < times.length; i++) {
-      final startTime = times[i]['time'] as DateTime?;
-      if (startTime == null) continue;
-      final twoHoursBefore = startTime.subtract(const Duration(hours: 2));
-      final diff = now.difference(twoHoursBefore).inMinutes;
-      if (diff >= 0 && now.isBefore(startTime.add(const Duration(hours: 2)))) {
-        return times[i]['name'] as String;
-      }
-    }
-    return 'Subuh';
+    final now = DateTime.now();
+    final upcoming = times.where((p) => p['time'].isAfter(now)).toList()
+      ..sort(
+        (a, b) => (a['time'] as DateTime).compareTo(b['time'] as DateTime),
+      );
+    final upcomingLabel = upcoming.isNotEmpty
+        ? upcoming.first['name'] as String
+        : '';
+    return upcomingLabel;
   }
 }
