@@ -35,7 +35,7 @@ class Helper {
       );
     final upcomingLabel = upcoming.isNotEmpty
         ? upcoming.first['name'] as String
-        : '';
+        : 'Subuh';
     return upcomingLabel;
   }
 }

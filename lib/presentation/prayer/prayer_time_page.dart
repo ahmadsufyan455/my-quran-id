@@ -192,10 +192,13 @@ class PrayerCountdownText extends StatelessWidget {
       create: (_) => PrayerCountdownCubit(prayers),
       child: BlocBuilder<PrayerCountdownCubit, PrayerCountdownState>(
         builder: (context, state) {
-          return Text(
-            '${_formatDuration(state.countdown)} menuju waktu ${state.label}',
-            style: const TextStyle(fontSize: 18, color: greyColor),
-          );
+          if (state.label.isNotEmpty) {
+            return Text(
+              '${_formatDuration(state.countdown)} menuju waktu ${state.label}',
+              style: const TextStyle(fontSize: 18, color: greyColor),
+            );
+          }
+          return const SizedBox();
         },
       ),
     );
