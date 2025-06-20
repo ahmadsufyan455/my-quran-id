@@ -20,7 +20,7 @@ class BottomNav extends StatelessWidget {
       child: BlocBuilder<BottomNavCubit, int>(
         builder: (context, currentIndex) {
           return Scaffold(
-            body: IndexedStack(index: currentIndex, children: pages),
+            body: pages[currentIndex],
             bottomNavigationBar: _buildNavigationBar(
               context,
               currentIndex,
@@ -43,12 +43,12 @@ class BottomNav extends StatelessWidget {
         indicatorColor: theme.colorScheme.primary,
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
           (states) => TextStyle(
-            color:
-                states.contains(WidgetState.selected) ? purpleColor : greyColor,
-            fontWeight:
-                states.contains(WidgetState.selected)
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+            color: states.contains(WidgetState.selected)
+                ? purpleColor
+                : greyColor,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.bold
+                : FontWeight.normal,
           ),
         ),
       ),
@@ -56,8 +56,8 @@ class BottomNav extends StatelessWidget {
         indicatorColor: Colors.transparent,
         backgroundColor: darkerGreyColor,
         selectedIndex: currentIndex,
-        onDestinationSelected:
-            (index) => context.read<BottomNavCubit>().changeTab(index),
+        onDestinationSelected: (index) =>
+            context.read<BottomNavCubit>().changeTab(index),
         destinations: _buildNavigationDestinations(),
       ),
     );

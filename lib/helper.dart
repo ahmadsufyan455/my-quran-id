@@ -21,4 +21,20 @@ class Helper {
     return connectivityResults.isNotEmpty &&
         !connectivityResults.contains(ConnectivityResult.none);
   }
+
+  static String getNearestPrayer(
+    List<Map<String, dynamic>> times,
+    DateTime now,
+  ) {
+    for (var i = 0; i < times.length; i++) {
+      final startTime = times[i]['time'] as DateTime?;
+      if (startTime == null) continue;
+      final twoHoursBefore = startTime.subtract(const Duration(hours: 2));
+      final diff = now.difference(twoHoursBefore).inMinutes;
+      if (diff >= 0 && now.isBefore(startTime.add(const Duration(hours: 2)))) {
+        return times[i]['name'] as String;
+      }
+    }
+    return 'Subuh';
+  }
 }
