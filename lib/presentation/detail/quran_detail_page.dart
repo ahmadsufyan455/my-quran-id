@@ -31,6 +31,7 @@ class QuranDetailPage extends StatefulWidget {
 class _QuranDetailPageState extends State<QuranDetailPage> {
   final ScrollController _scrollController = ScrollController();
   final Map<int, GlobalKey> _itemKeys = {}; // Store keys for each item
+  int? _currentSurahNumber; // Track current surah to clear keys on change
 
   void _onScroll() {
     final cubit = context.read<ScrollCubit>();
@@ -44,9 +45,26 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     }
   }
 
+  // Helper method to get or create a GlobalKey for an item
+  GlobalKey _getKeyForIndex(int index) {
+    if (!_itemKeys.containsKey(index)) {
+      _itemKeys[index] = GlobalKey();
+    }
+    return _itemKeys[index]!;
+  }
+
+  // Clear keys when surah changes to prevent memory leaks
+  void _clearKeysIfNeeded(int surahNumber) {
+    if (_currentSurahNumber != surahNumber) {
+      _itemKeys.clear();
+      _currentSurahNumber = surahNumber;
+    }
+  }
+
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+    _currentSurahNumber = widget.number;
     Future.delayed(const Duration(milliseconds: 500), _scrollToLastRead);
     super.initState();
   }
@@ -211,6 +229,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     required ScrollController scrollController,
     required Map<int, GlobalKey> itemKeys,
   }) {
+    // Clear keys if we're viewing a different surah
+    _clearKeysIfNeeded(data.number);
+
     return Scrollbar(
       thumbVisibility: true,
       child: SingleChildScrollView(
@@ -231,9 +252,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
               ),
               itemCount: data.verses.length,
               itemBuilder: (context, index) {
-                itemKeys[index] = GlobalKey();
+                // Use helper method to get or create key only once
                 return DetailItemSurah(
-                  itemKey: itemKeys[index]!,
+                  itemKey: _getKeyForIndex(index),
                   data: data.verses[index],
                   surah: data.latinName,
                   number: data.number,
