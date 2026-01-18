@@ -138,9 +138,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
                                                 arguments: {
                                                   'number':
                                                       lastReadState.number,
-                                                  'name':
-                                                      lastReadState
-                                                          .lastReadSurah,
+                                                  'name': lastReadState
+                                                      .lastReadSurah,
                                                   'isFromLastRead': true,
                                                 },
                                               ).then((_) {
@@ -194,11 +193,10 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     const SizedBox(height: 10.0),
                     Expanded(
                       child: ListView.separated(
-                        separatorBuilder:
-                            (context, index) => const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24),
-                              child: Divider(color: greyColor, thickness: 1),
-                            ),
+                        separatorBuilder: (context, index) => const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          child: Divider(color: greyColor, thickness: 1),
+                        ),
                         itemBuilder: (context, index) {
                           final data = state.quran[index];
                           return ListItemSurah(

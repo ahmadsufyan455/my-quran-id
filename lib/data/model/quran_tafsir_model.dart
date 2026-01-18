@@ -35,10 +35,7 @@ class Tafsir {
   int? verse;
   String? tafsir;
 
-  Tafsir({
-    this.verse,
-    this.tafsir,
-  });
+  Tafsir({this.verse, this.tafsir});
 
   Tafsir.fromJson(Map<String, dynamic> json) {
     verse = json['ayat'];

@@ -10,6 +10,7 @@ import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/scroll_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/detail_item_surah.dart';
 import 'package:my_quran_id/routes.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'bloc/quran_detail_bloc.dart';
 
@@ -29,58 +30,55 @@ class QuranDetailPage extends StatefulWidget {
 }
 
 class _QuranDetailPageState extends State<QuranDetailPage> {
-  final ScrollController _scrollController = ScrollController();
-  final Map<int, GlobalKey> _itemKeys = {}; // Store keys for each item
-  int? _currentSurahNumber; // Track current surah to clear keys on change
+  // Controllers for ScrollablePositionedList
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
 
-  void _onScroll() {
+  int? _currentSurahNumber; // Track current surah
+
+  void _onScrollPositionChanged() {
+    final positions = _itemPositionsListener.itemPositions.value;
+    if (positions.isEmpty) return;
+
     final cubit = context.read<ScrollCubit>();
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100) {
-      if (widget.number < 114) {
-        cubit.showButton();
-      }
+
+    // Check if we're near the end (last few items are visible)
+    final maxIndex = positions
+        .map((p) => p.index)
+        .reduce((a, b) => a > b ? a : b);
+    final isNearEnd = positions.any(
+      (p) => p.index == maxIndex && p.itemTrailingEdge <= 1.1,
+    );
+
+    if (isNearEnd && widget.number < 114) {
+      cubit.showButton();
     } else {
       cubit.hideButton();
     }
   }
 
-  // Helper method to get or create a GlobalKey for an item
-  GlobalKey _getKeyForIndex(int index) {
-    if (!_itemKeys.containsKey(index)) {
-      _itemKeys[index] = GlobalKey();
-    }
-    return _itemKeys[index]!;
-  }
-
-  // Clear keys when surah changes to prevent memory leaks
-  void _clearKeysIfNeeded(int surahNumber) {
-    if (_currentSurahNumber != surahNumber) {
-      _itemKeys.clear();
-      _currentSurahNumber = surahNumber;
-    }
-  }
-
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
-    _currentSurahNumber = widget.number;
-    Future.delayed(const Duration(milliseconds: 500), _scrollToLastRead);
     super.initState();
+    _currentSurahNumber = widget.number;
+    _itemPositionsListener.itemPositions.addListener(_onScrollPositionChanged);
   }
 
-  void _scrollToLastRead() async {
+  void _scrollToLastRead(int totalItems) async {
     if (widget.isFromLastRead) {
       await context.read<LastReadCubit>().loadLastRead();
       if (!mounted) return;
       final lastReadIndex = context.read<LastReadCubit>().state.lastReadIndex;
-      if (_itemKeys.containsKey(lastReadIndex)) {
-        final key = _itemKeys[lastReadIndex];
-        final contextWidget = key?.currentContext;
-        if (contextWidget != null) {
-          if (!contextWidget.mounted) return;
-          Scrollable.ensureVisible(
-            contextWidget,
+      if (lastReadIndex != null && lastReadIndex >= 0) {
+        // +1 because index 0 is the header
+        final targetIndex = lastReadIndex + 1;
+        if (targetIndex < totalItems) {
+          // Wait a bit for the list to be ready
+          await Future.delayed(const Duration(milliseconds: 300));
+          if (!mounted) return;
+          _itemScrollController.scrollTo(
+            index: targetIndex,
             duration: const Duration(seconds: 1),
             curve: Curves.easeInOut,
           );
@@ -91,8 +89,9 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _itemPositionsListener.itemPositions.removeListener(
+      _onScrollPositionChanged,
+    );
     super.dispose();
   }
 
@@ -115,11 +114,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is QuranDetailSuccess) {
               final data = state.quranDetail;
-              return _buildContent(
-                data: data,
-                scrollController: _scrollController,
-                itemKeys: _itemKeys,
-              );
+              return _buildContent(data: data);
             } else if (state is QuranDetailError) {
               return Center(child: Text(state.error));
             }
@@ -224,84 +219,89 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     );
   }
 
-  Widget _buildContent({
-    required QuranDetail data,
-    required ScrollController scrollController,
-    required Map<int, GlobalKey> itemKeys,
-  }) {
-    // Clear keys if we're viewing a different surah
-    _clearKeysIfNeeded(data.number);
+  Widget _buildContent({required QuranDetail data}) {
+    // Clear state if viewing a different surah
+    if (_currentSurahNumber != data.number) {
+      _currentSurahNumber = data.number;
+    }
 
-    return Scrollbar(
-      thumbVisibility: true,
-      child: SingleChildScrollView(
-        controller: scrollController,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+    // Total items: 1 header + verses + 1 next button
+    final totalItems = 1 + data.verses.length + 1;
+
+    // Trigger scroll to last read after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToLastRead(totalItems);
+    });
+
+    return ScrollablePositionedList.builder(
+      itemScrollController: _itemScrollController,
+      itemPositionsListener: _itemPositionsListener,
+      itemCount: totalItems,
+      itemBuilder: (context, index) {
+        // Index 0: Header
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: _buildHeader(data),
+          );
+        }
+
+        // Last index: Next surah button
+        if (index == totalItems - 1) {
+          return BlocBuilder<ScrollCubit, bool>(
+            builder: (context, showButton) {
+              if (!showButton || widget.number >= 114) {
+                return const SizedBox.shrink();
+              }
+
+              return ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: purpleColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  final nextNumber = widget.number + 1;
+                  if (nextNumber <= 114) {
+                    final nextSurahName = surahNames[nextNumber - 1];
+
+                    Navigator.pushReplacementNamed(
+                      context,
+                      RouteName.detail.name,
+                      arguments: {'number': nextNumber, 'name': nextSurahName},
+                    );
+                  }
+                },
+                label: Text(
+                  '${surahNames[widget.number + 1 - 1]}',
+                  style: const TextStyle(fontSize: 16, color: lightColor),
+                ),
+                icon: const Icon(Icons.skip_next_rounded, color: lightColor),
+              );
+            },
+          );
+        }
+
+        // Verse items (index 1 to totalItems - 2)
+        final verseIndex = index - 1; // Adjust for header offset
+        return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: _buildHeader(data),
-            ),
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => const Padding(
+            if (verseIndex > 0)
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 child: Divider(color: greyColor, thickness: 1),
               ),
-              itemCount: data.verses.length,
-              itemBuilder: (context, index) {
-                // Use helper method to get or create key only once
-                return DetailItemSurah(
-                  itemKey: _getKeyForIndex(index),
-                  data: data.verses[index],
-                  surah: data.latinName,
-                  number: data.number,
-                  index: index,
-                );
-              },
-            ),
-            BlocBuilder<ScrollCubit, bool>(
-              builder: (context, showButton) {
-                if (!showButton || widget.number >= 114) {
-                  return const SizedBox.shrink();
-                }
-
-                return ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: purpleColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {
-                    final nextNumber = widget.number + 1;
-                    if (nextNumber <= 114) {
-                      final nextSurahName = surahNames[nextNumber - 1];
-
-                      Navigator.pushReplacementNamed(
-                        context,
-                        RouteName.detail.name,
-                        arguments: {
-                          'number': nextNumber,
-                          'name': nextSurahName,
-                        },
-                      );
-                    }
-                  },
-                  label: Text(
-                    '${surahNames[widget.number + 1 - 1]}',
-                    style: const TextStyle(fontSize: 16, color: lightColor),
-                  ),
-                  icon: const Icon(Icons.skip_next_rounded, color: lightColor),
-                );
-              },
+            DetailItemSurah(
+              data: data.verses[verseIndex],
+              surah: data.latinName,
+              number: data.number,
+              index: verseIndex,
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

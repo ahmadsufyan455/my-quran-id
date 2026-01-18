@@ -12,7 +12,6 @@ class DetailItemSurah extends StatelessWidget {
   final String surah;
   final int index;
   final int number;
-  final GlobalKey itemKey; // Add this key to track height
 
   const DetailItemSurah({
     super.key,
@@ -20,13 +19,11 @@ class DetailItemSurah extends StatelessWidget {
     required this.surah,
     required this.index,
     required this.number,
-    required this.itemKey,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: itemKey, // Assign key to track widget size
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
