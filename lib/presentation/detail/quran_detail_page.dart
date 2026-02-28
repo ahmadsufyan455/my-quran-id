@@ -36,6 +36,8 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
       ItemPositionsListener.create();
 
   int? _currentSurahNumber; // Track current surah
+  double _scrollProgress = 0.0; // 0.0 – 1.0 reading progress
+  int _totalVerseItems = 0; // total item count for progress calculation
 
   void _onScrollPositionChanged() {
     final positions = _itemPositionsListener.itemPositions.value;
@@ -43,10 +45,12 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
 
     final cubit = context.read<ScrollCubit>();
 
-    // Check if we're near the end (last few items are visible)
+    // Highest visible item index
     final maxIndex = positions
         .map((p) => p.index)
         .reduce((a, b) => a > b ? a : b);
+
+    // Check if we're near the end (last few items are visible)
     final isNearEnd = positions.any(
       (p) => p.index == maxIndex && p.itemTrailingEdge <= 1.1,
     );
@@ -55,6 +59,14 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
       cubit.showButton();
     } else {
       cubit.hideButton();
+    }
+
+    // Compute reading progress (0.0 – 1.0)
+    if (_totalVerseItems > 1) {
+      final progress = (maxIndex / (_totalVerseItems - 1)).clamp(0.0, 1.0);
+      if (progress != _scrollProgress) {
+        setState(() => _scrollProgress = progress);
+      }
     }
   }
 
@@ -219,6 +231,46 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     );
   }
 
+  Widget _buildProgressBar() {
+    final percentage = (_scrollProgress * 100).clamp(0, 100).toStringAsFixed(0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: _scrollProgress),
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          builder: (context, value, _) {
+            return LinearProgressIndicator(
+              value: value,
+              minHeight: 4,
+              backgroundColor: Colors.grey.withValues(alpha: 0.2),
+              valueColor: const AlwaysStoppedAnimation<Color>(purpleColor),
+            );
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 12, top: 4),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: purpleColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              '$percentage%',
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: purpleColor,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildContent({required QuranDetail data}) {
     // Clear state if viewing a different surah
     if (_currentSurahNumber != data.number) {
@@ -227,81 +279,94 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
 
     // Total items: 1 header + verses + 1 next button
     final totalItems = 1 + data.verses.length + 1;
+    _totalVerseItems = totalItems; // expose to progress calculator
 
     // Trigger scroll to last read after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToLastRead(totalItems);
     });
 
-    return ScrollablePositionedList.builder(
-      itemScrollController: _itemScrollController,
-      itemPositionsListener: _itemPositionsListener,
-      itemCount: totalItems,
-      itemBuilder: (context, index) {
-        // Index 0: Header
-        if (index == 0) {
-          return Padding(
-            padding: const EdgeInsets.all(24),
-            child: _buildHeader(data),
-          );
-        }
-
-        // Last index: Next surah button
-        if (index == totalItems - 1) {
-          return BlocBuilder<ScrollCubit, bool>(
-            builder: (context, showButton) {
-              if (!showButton || widget.number >= 114) {
-                return const SizedBox.shrink();
-              }
-
-              return ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: purpleColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  final nextNumber = widget.number + 1;
-                  if (nextNumber <= 114) {
-                    final nextSurahName = surahNames[nextNumber - 1];
-
-                    Navigator.pushReplacementNamed(
-                      context,
-                      RouteName.detail.name,
-                      arguments: {'number': nextNumber, 'name': nextSurahName},
-                    );
-                  }
-                },
-                label: Text(
-                  '${surahNames[widget.number + 1 - 1]}',
-                  style: const TextStyle(fontSize: 16, color: lightColor),
-                ),
-                icon: const Icon(Icons.skip_next_rounded, color: lightColor),
+    return Stack(
+      children: [
+        ScrollablePositionedList.builder(
+          itemScrollController: _itemScrollController,
+          itemPositionsListener: _itemPositionsListener,
+          itemCount: totalItems,
+          itemBuilder: (context, index) {
+            // Index 0: Header
+            if (index == 0) {
+              return Padding(
+                padding: const EdgeInsets.all(24),
+                child: _buildHeader(data),
               );
-            },
-          );
-        }
+            }
 
-        // Verse items (index 1 to totalItems - 2)
-        final verseIndex = index - 1; // Adjust for header offset
-        return Column(
-          children: [
-            if (verseIndex > 0)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                child: Divider(color: greyColor, thickness: 1),
-              ),
-            DetailItemSurah(
-              data: data.verses[verseIndex],
-              surah: data.latinName,
-              number: data.number,
-              index: verseIndex,
-            ),
-          ],
-        );
-      },
+            // Last index: Next surah button
+            if (index == totalItems - 1) {
+              return BlocBuilder<ScrollCubit, bool>(
+                builder: (context, showButton) {
+                  if (!showButton || widget.number >= 114) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: purpleColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      final nextNumber = widget.number + 1;
+                      if (nextNumber <= 114) {
+                        final nextSurahName = surahNames[nextNumber - 1];
+
+                        Navigator.pushReplacementNamed(
+                          context,
+                          RouteName.detail.name,
+                          arguments: {
+                            'number': nextNumber,
+                            'name': nextSurahName,
+                          },
+                        );
+                      }
+                    },
+                    label: Text(
+                      '${surahNames[widget.number + 1 - 1]}',
+                      style: const TextStyle(fontSize: 16, color: lightColor),
+                    ),
+                    icon: const Icon(
+                      Icons.skip_next_rounded,
+                      color: lightColor,
+                    ),
+                  );
+                },
+              );
+            }
+
+            // Verse items (index 1 to totalItems - 2)
+            final verseIndex = index - 1; // Adjust for header offset
+            return Column(
+              children: [
+                if (verseIndex > 0)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                    child: Divider(color: greyColor, thickness: 1),
+                  ),
+                DetailItemSurah(
+                  data: data.verses[verseIndex],
+                  surah: data.latinName,
+                  number: data.number,
+                  index: verseIndex,
+                ),
+              ],
+            );
+          },
+        ),
+        // Reading progress bar pinned at the top
+        Positioned(top: 0, left: 0, right: 0, child: _buildProgressBar()),
+      ],
     );
   }
 }
