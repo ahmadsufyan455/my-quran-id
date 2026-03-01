@@ -7,6 +7,7 @@ import 'package:my_quran_id/domain/quran_repository.dart';
 import 'package:my_quran_id/main.dart';
 import 'package:my_quran_id/presentation/detail/cubit/audio_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/last_read_cubit.dart';
+import 'package:my_quran_id/presentation/detail/cubit/read_progress_cubit.dart';
 import 'package:my_quran_id/presentation/detail/cubit/scroll_cubit.dart';
 import 'package:my_quran_id/presentation/widgets/detail_item_surah.dart';
 import 'package:my_quran_id/routes.dart';
@@ -36,8 +37,12 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
       ItemPositionsListener.create();
 
   int? _currentSurahNumber; // Track current surah
-  double _scrollProgress = 0.0; // 0.0 – 1.0 reading progress
   int _totalVerseItems = 0; // total item count for progress calculation
+  bool _hasScrolledToLastRead = false; // guard: only scroll once
+
+  // Owned here so the scroll listener can call it directly,
+  // without needing a BuildContext that is inside MultiBlocProvider.
+  final ReadProgressCubit _readProgressCubit = ReadProgressCubit();
 
   void _onScrollPositionChanged() {
     final positions = _itemPositionsListener.itemPositions.value;
@@ -61,12 +66,12 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
       cubit.hideButton();
     }
 
-    // Compute reading progress (0.0 – 1.0)
+    // Compute reading progress via Cubit — only the progress bar rebuilds.
+    // We call _readProgressCubit directly (not via context.read) because
+    // this listener fires outside the MultiBlocProvider subtree context.
     if (_totalVerseItems > 1) {
-      final progress = (maxIndex / (_totalVerseItems - 1)).clamp(0.0, 1.0);
-      if (progress != _scrollProgress) {
-        setState(() => _scrollProgress = progress);
-      }
+      final progress = maxIndex / (_totalVerseItems - 1);
+      _readProgressCubit.updateProgress(progress);
     }
   }
 
@@ -78,7 +83,11 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
   }
 
   void _scrollToLastRead(int totalItems) async {
+    // Guard: only execute once to prevent repeated rebuilds (caused by
+    // setState for progress) from firing this scroll multiple times.
+    if (_hasScrolledToLastRead) return;
     if (widget.isFromLastRead) {
+      _hasScrolledToLastRead = true;
       await context.read<LastReadCubit>().loadLastRead();
       if (!mounted) return;
       final lastReadIndex = context.read<LastReadCubit>().state.lastReadIndex;
@@ -96,6 +105,8 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
           );
         }
       }
+    } else {
+      _hasScrolledToLastRead = true; // not needed but keeps state consistent
     }
   }
 
@@ -104,6 +115,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
     _itemPositionsListener.itemPositions.removeListener(
       _onScrollPositionChanged,
     );
+    _readProgressCubit.close();
     super.dispose();
   }
 
@@ -117,6 +129,7 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
                 ..add(LoadQuranDetail(widget.number)),
         ),
         BlocProvider(create: (context) => AudioCubit()),
+        BlocProvider.value(value: _readProgressCubit),
       ],
       child: Scaffold(
         appBar: AppBar(title: Text('${widget.number}. ${widget.name}')),
@@ -232,42 +245,48 @@ class _QuranDetailPageState extends State<QuranDetailPage> {
   }
 
   Widget _buildProgressBar() {
-    final percentage = (_scrollProgress * 100).clamp(0, 100).toStringAsFixed(0);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: _scrollProgress),
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          builder: (context, value, _) {
-            return LinearProgressIndicator(
-              value: value,
-              minHeight: 4,
-              backgroundColor: Colors.grey.withValues(alpha: 0.2),
-              valueColor: const AlwaysStoppedAnimation<Color>(purpleColor),
-            );
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 12, top: 4),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: purpleColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(20),
+    // BlocBuilder scopes rebuilds to only this widget — the page tree
+    // above is never rebuilt when the scroll progress changes.
+    return BlocBuilder<ReadProgressCubit, double>(
+      builder: (context, progress) {
+        final percentage = (progress * 100).clamp(0, 100).toStringAsFixed(0);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: progress),
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              builder: (context, value, _) {
+                return LinearProgressIndicator(
+                  value: value,
+                  minHeight: 4,
+                  backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                  valueColor: const AlwaysStoppedAnimation<Color>(purpleColor),
+                );
+              },
             ),
-            child: Text(
-              '$percentage%',
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: purpleColor,
+            Padding(
+              padding: const EdgeInsets.only(right: 12, top: 4),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: purpleColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '$percentage%',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: purpleColor,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
